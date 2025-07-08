@@ -1,19 +1,6 @@
+import { generateMfaCode, generateSecret } from "@/lib/mfa";
+import { mfaStore, secureWordStore } from "@/lib/store";
 import { NextRequest, NextResponse } from "next/server";
-
-type SecureWordEntry = {
-  username: string;
-  secureWord: string;
-  issuedAt: number;
-  lastRequestedAt: number;
-};
-
-type MfaEntry = {
-  code: string;
-  attempts: number;
-};
-
-const secureWordStore = new Map<string, SecureWordEntry>();
-const mfaStore = new Map<string, MfaEntry>();
 
 export async function POST(req: NextRequest) {
   const { username, hashedPassword, secureWord } = await req.json();
@@ -32,10 +19,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Secure word expired" }, { status: 403 });
   }
 
-  // Simulate password check: accept any hash
-  const mfaCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const secret = generateSecret(username);
 
+  const mfaCode = generateMfaCode(secret);
   mfaStore.set(username, { code: mfaCode, attempts: 0 });
+  console.log(`[MFA CODE] for ${username}: ${mfaCode}`);
 
   return NextResponse.json({ success: true, message: "Proceed to MFA" });
 }

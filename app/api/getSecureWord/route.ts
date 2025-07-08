@@ -1,14 +1,7 @@
+import { secureWordStore } from "@/lib/store";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
-type SecureWordEntry = {
-  username: string;
-  secureWord: string;
-  issuedAt: number;
-  lastRequestedAt: number;
-};
-
-const secureWordStore = new Map<string, SecureWordEntry>();
 const SECRET = "my_secret_key";
 
 export async function POST(req: NextRequest) {

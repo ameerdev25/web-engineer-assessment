@@ -4,7 +4,9 @@ import { NavigationMenus } from "@/config/navigations";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Link from "next/link";
 import { Input } from "../ui/input";
-import { LogIn } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const TopNavigationMenu = () => {
   const isMobile = useIsMobile();

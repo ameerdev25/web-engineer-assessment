@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/navigation/AppSidebar";
 import { AppSidebarTrigger } from "@/components/navigation/AppSidebarTrigger";
 import { TopNavigationMenu } from "@/components/navigation/TopNavigationMenu";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} text-zinc-500 antialiased`}
       >
+        <Toaster />
         <SidebarProvider defaultOpen={false}>
           <AppSidebar />
           <div className="flex flex-col">
@@ -38,7 +40,7 @@ export default function RootLayout({
             <div>
               <TopNavigationMenu />
             </div>
-            <div className="p-2">{children}</div>
+            <div className="p-2 w-screen">{children}</div>
           </div>
         </SidebarProvider>
       </body>

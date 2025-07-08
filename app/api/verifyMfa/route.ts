@@ -1,11 +1,6 @@
+import { generateMfaCode } from "@/lib/mfa";
+import { mfaStore, secureWordStore } from "@/lib/store";
 import { NextRequest, NextResponse } from "next/server";
-
-type MfaEntry = {
-  code: string;
-  attempts: number;
-};
-
-const mfaStore = new Map<string, MfaEntry>();
 
 export async function POST(req: NextRequest) {
   const { username, code } = await req.json();
@@ -24,8 +19,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many attempts" }, { status: 403 });
   }
 
-  if (entry.code === code) {
+  const expectedCode = entry.code;
+  if (code === expectedCode) {
     mfaStore.delete(username);
+    secureWordStore.delete(username);
     return NextResponse.json({ success: true });
   }
 

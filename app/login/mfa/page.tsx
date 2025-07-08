@@ -3,40 +3,35 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
+export default function Mfa() {
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
+
   const router = useRouter();
 
-  // This will clear login data to simulate logout
-  useEffect(() => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username");
-    localStorage.removeItem("secureWord");
-  }, []);
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    const username = localStorage.getItem("username");
 
-    const res = await fetch("/api/getSecureWord", {
+    const res = await fetch("/api/verifyMfa", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ username, code }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error || "Something went wrong");
+      setError(data.error || "Invalid code");
       return;
     }
 
-    localStorage.setItem("username", username);
-    localStorage.setItem("secureWord", data.secureWord);
-    router.push("/login/secure-word");
+    localStorage.setItem("isLoggedIn", "true");
+    toast("Login successful");
+    router.push("/dashboard");
   };
 
   return (
@@ -45,19 +40,20 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 justify-center w-[300px] bg-white shadow-lg p-3 rounded-lg"
       >
-        <span>Login</span>
+        <span>Enter 6 digit code</span>
         <Input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
           required
+          pattern="\d{6}"
         />
         <Button
           type="submit"
           variant="default"
           className="bg-blue-500 cursor-pointer"
         >
-          Login
+          Submit
         </Button>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </form>

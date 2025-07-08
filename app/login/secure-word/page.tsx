@@ -32,10 +32,12 @@ export default function SecureWordPage() {
   }, [router]);
 
   return (
-    <div className="w-full h-[calc(100vh-80px)] flex flex-col items-center justify-center rounded-md">
-      <div className="bg-white rounded-md shadow p-4 w-[270px]">
+    <div className="w-full h-[calc(100vh-80px)] bg-[#b31c8c] flex flex-col items-center justify-center rounded-md">
+      <div className="bg-white rounded-md shadow p-4 w-[450px]">
         <h2 className="font-semibold mb-2">Your Secure Word:</h2>
-        <p className="bg-gray-100 p-2 mb-2 font-mono">{secureWord}</p>
+        <p className="bg-gray-100 p-2 mb-2 font-mono overflow-auto">
+          {secureWord}
+        </p>
         <p className="text-sm text-gray-600 mb-4">
           Expire in {timeLeft} seconds.
         </p>
